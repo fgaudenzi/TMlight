@@ -4,6 +4,7 @@ from testmanager.database import Base
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True,autoincrement=True)
