@@ -1,0 +1,102 @@
+<!--
+Author: Filippo Gaudenzi
+Author URL: https://www.github.com/fgaudenzi
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moon Cloud Login</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+          <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+         <link rel="stylesheet" href="{{ url_for('static', filename='ng-admin/ng-admin.min.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='mooncloud.css')}}">
+      <script src="{{ url_for('static', filename='bootstrap/js/bootstrap-notify.min.js')}}" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="container" style="margin-top:100px">
+    <div class="row text-center">
+        <form onsubmit="return login()">
+        <div class="col-md-offset-3 col-md-5">
+            <div class="form-login">
+                         <img style="width: 200px;" class="image center" src="{{ url_for('static', filename='img/cloudmoon.png')}}">
+
+            <h4>MOON CLOUD login</h4>
+            <input type="text" id="username" class="form-control input-sm chat-input" placeholder="username" />
+            </br>
+            <input type="password" id="password" class="form-control input-sm chat-input" placeholder="password" />
+            </br>
+            <div class="wrapper">
+            <span class="group-btn">
+                 <button type="submit" class="btn btn-primary btn-md">login <i class="fa fa-sign-in"></i></button>
+            </span>
+            </div>
+            </div>
+
+        </div>
+
+            </form>
+
+    </div>
+</div>
+
+
+
+    <script type="application/x-javascript">
+    window.addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+    function hideURLbar(){
+        window.scrollTo(0,1);
+    }
+    function login(e) {
+        if (e) {
+            e.prevenDefault();
+        }
+        var username= document.getElementById('username').value
+        var password= document.getElementById('password').value
+        $.ajax
+({
+  type: "GET",
+  url: "http://"+username+":"+password+"@localhost:8080/api/token",
+  dataType: 'json',
+  async: false,
+    //beforeSend: function(xhr) {
+    //    xhr.setRequestHeader("Authorization", "Basic "
+    //        + btoa(username + ":" + password));},
+  success: function (data, response, xhr){
+      if (xhr.status == 201){
+          window.sessionStorage.setItem('mooncloud_login', data.token);
+          window.location.href = "http://"+data.token+":@localhost:8080/app";
+  }else{
+         $.notify({
+	        message: 'invalid username/password',
+	      },{
+	type: 'danger',
+                newest_on_top: true,
+                delay:200
+});
+      }
+  },
+  error:function(httpObj, textStatus) {
+        if (httpObj.status == 200)
+            alert("hello")
+        else
+            $.notify({
+	            message: 'invalid username/password',
+	        },{
+	type: 'danger',
+                newest_on_top: true,
+                delay:200
+});
+    }
+});
+
+       //window.location.href = "./index.html";
+        return false;
+    }
+    </script>
+</body>
+</html>

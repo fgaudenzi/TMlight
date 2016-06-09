@@ -1,4 +1,4 @@
-from flask import Flask, json, request,abort,g
+from flask import Flask, json, request,abort,g, render_template, redirect, url_for
 from testmanager.database import db_session, init_db
 from testmanager.model.user import User
 from testmanager.model.probem import Probem
@@ -13,6 +13,15 @@ auth = HTTPBasicAuth()
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'trentatre trentini'
+
+
+def request_wants_json():
+    best = request.accept_mimetypes \
+        .best_match(['application/json', 'text/html'])
+    return best == 'application/json' and \
+        request.accept_mimetypes[best] > \
+        request.accept_mimetypes['text/html']
+
 
 
 @app.teardown_appcontext
@@ -34,6 +43,12 @@ def verify_password(username_or_token, password):
 
 
 
+
+
+@app.route('/login')
+def log_in():
+    return render_template('login.html')
+
 @app.route('/api/token')
 @auth.login_required
 def get_auth_token():
@@ -46,10 +61,11 @@ def get_auth_token():
 def hello_world():
     return 'Hello World!'
 
+@app.route('/users',methods=['POST'])
 @app.route('/signup',methods=['POST'])
 def signup():
-    print "signup"
-    print "JSON received..."
+    print ("signup")
+    print ("JSON received...")
     print request.json
     if request.json:
         username = request.json.get('username')
@@ -69,7 +85,7 @@ def signup():
             e = sys.exc_info()[0]
             print e
             return json.dumps({'message':"errore "+e}), 500, {'ContentType':'application/json'}
-        return json.dumps({'message':"user authenticated"}), 201, {'ContentType':'application/json'}
+        return json.dumps({'message':"user created"}), 201, {'ContentType':'application/json'}
 
 
 
@@ -88,6 +104,13 @@ def list_evidences(probe_id):
             print e
     return json.dumps(result),200
 
+
+@app.route('/app',methods=['GET'])
+@auth.login_required
+def home():
+    return render_template('home.html')
+
+
 @app.route('/probe/<probe_id>/run',methods=['POST','GET'])
 @auth.login_required
 def runProbe(probe_id):
@@ -105,7 +128,7 @@ def runProbe(probe_id):
         else:
             return json.dumps({"message":"error starting probe"+str(probe_id)+" check Test Agent logs"}),500
 
-@app.route('/probe/<probe_id>',methods=['GET','DELETE'])
+@app.route('/probes/<probe_id>',methods=['GET','DELETE'])
 @auth.login_required
 def manageProbe(probe_id):
     try:
@@ -123,7 +146,7 @@ def manageProbe(probe_id):
         return json.dumps({"id":str(p.id),"driver":p.type,"schema":"/probe/"+probe_id+"/schema"}),200
 
 
-@app.route('/probe/<probe_id>/schema',methods=['GET'])
+@app.route('/probes/<probe_id>/schema',methods=['GET'])
 @auth.login_required
 def show_testcase(probe_id):
      p=Probem.query.filter_by(id=int(probe_id)).first()
@@ -131,7 +154,7 @@ def show_testcase(probe_id):
           return p.doc,200,{'Content-Type': 'application/xml; charset=utf-8'}
 
 
-@app.route('/probe/',methods=['POST'])
+@app.route('/probes/',methods=['POST'])
 @auth.login_required
 def createProbe():
     if request.method == 'POST':
@@ -144,7 +167,7 @@ def createProbe():
         return json.dumps({"id":str(probedb.id)}), 201
 
 
-@app.route('/driver/',methods=['GET'])
+@app.route('/drivers/',methods=['GET'])
 def list_driver():
     print "required list available drivers"
     allp=Static_Probe.query.all()
@@ -153,11 +176,11 @@ def list_driver():
         result.append(p.id)
     return json.dumps({result}),200
 
-@app.route('/driver/<driver_id>',methods=['GET'])
+@app.route('/drivers/<driver_id>',methods=['GET'])
 def get_driver(driver_id):
     print "required list available drivers"
     allp=Static_Probe.query.all(driver_id)
-    if not ap:
+    if not allp:
         return json.dumps({"message":"resource not found"}),404
     result=[]
     for p in allp:
@@ -177,6 +200,20 @@ def get_resource():
    return json.dumps({'success':str(g.user.email)}), 201, {'ContentType':'application/json'}
 
 
+@app.errorhandler(401)
+def custom_401():
+    a=request_wants_json()
+    return "",404
+@auth.error_handler
+def auth_error():
+    a=request_wants_json()
+    if(a):
+        return "",403
+    else:
+         try:
+            return redirect(url_for('log_in'))
+         except Exception,e:
+             print str(e)
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=8080)
