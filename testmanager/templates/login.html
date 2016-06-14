@@ -61,13 +61,13 @@ Author URL: https://www.github.com/fgaudenzi
 ({
   type: "GET",
   url: "/api/token",
-  dataType: 'application/json',
-    username:"filippo",
-    password:"password",
+  dataType: 'json',
+  username:"jmaggesi",
+  password:"demo",
   async: false,
-    //beforeSend: function(xhr) {
-    //    xhr.setRequestHeader("Authorization", "Basic "
-    //        + btoa(username + ":" + password));},
+  beforeSend: function(xhr) {
+      xhr.setRequestHeader("Authorization", "Basic "
+              + btoa("jmaggesi" + ":" + "demo"));},
   success: function (data, response, xhr){
       if (xhr.status == 201){
           window.sessionStorage.setItem('mooncloud_login', data.token);
