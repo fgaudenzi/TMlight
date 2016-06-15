@@ -169,7 +169,7 @@ def createProbe():
         allp=Probem.query.all()
         result=[]
         for p in allp:
-            e=Evidence.query.filter_by(id_probe=int(p.id))
+            e=Evidence.query.filter_by(id_probe=int(p.id)).all()
             if e and len(e)>0:
                 evidencep=e[0].result
                 active=True
@@ -177,7 +177,7 @@ def createProbe():
                 evidencep=False
                 active=False
             result.append({"id":p.id,"type":p.type,"active":active,"status":""})
-        return json.dumps({result}),200
+        return json.dumps({"result":result}),200
 
 @app.route('/drivers',methods=['GET'])
 def list_driver():
