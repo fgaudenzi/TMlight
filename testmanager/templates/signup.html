@@ -1,6 +1,6 @@
 <!--
-Author: Filippo Gaudenzi
-Author URL: https://www.github.com/fgaudenzi
+Author: Jonatan Maggesi
+Author URL: https://www.github.com/jmaggesi
 
 -->
 <!DOCTYPE html>
@@ -17,22 +17,22 @@ Author URL: https://www.github.com/fgaudenzi
 
 <div class="container" style="margin-top:100px">
     <div class="row text-center">
-        <form onsubmit="return login()">
+        <form onsubmit="return signUp()">
         <div class="col-md-offset-3 col-md-5">
             <div class="form-login">
                          <img style="width: 200px;" class="image center" src="{{ url_for('static', filename='img/cloudmoon.png')}}">
 
-            <h4>MOON CLOUD login</h4>
+            <h4>MOON CLOUD Sign Up</h4>
             <input type="text" id="username" class="form-control input-sm chat-input" placeholder="username" />
             </br>
             <input type="password" id="password" class="form-control input-sm chat-input" placeholder="password" />
             </br>
+            <input type="password" id="confirm-password" class="form-control input-sm chat-input" placeholder="password" />
+            </br>
             <div class="wrapper">
             <span class="group-btn">
-                 <button type="submit" class="btn btn-primary btn-md">Login <i class="fa fa-sign-in"></i></button>
-                 <a href="/register" style="float: right;">Sign Up</a>
+                 <button type="submit" class="btn btn-primary btn-md">Sign Up <i class="fa fa-sign-in"></i></button>
             </span>
-
             </div>
             </div>
 
@@ -53,16 +53,17 @@ Author URL: https://www.github.com/fgaudenzi
     function hideURLbar(){
         window.scrollTo(0,1);
     }
-    function login(e) {
+    function signUp(e) {
         if (e) {
             e.prevenDefault();
         }
-        var username= document.getElementById('username').value
-        var password= document.getElementById('password').value
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirm-password').value;
 
-        if(username == "" || password == ""){
+        if(username == "" || password == "" || confirmPassword == ""){
             $.notify({
-	            message: 'You should fill the Login Form',
+	            message: 'You should fill all the fields of the form to Sign Up',
 	        },{
 	            type: 'danger',
                 newest_on_top: true,
@@ -71,21 +72,18 @@ Author URL: https://www.github.com/fgaudenzi
             return false;
         }
 
-        $.ajax({
-            type: "GET",
-            url: "/api/token",
+        if(password == confirmPassword){
+            $.ajax({
+            type: "POST",
+            url: "/signup",
             dataType: 'json',
-            username:username,
-            password:password,
+            contentType:'application/json',
             async: false,
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Authorization", "Basic "
-                            + btoa(username + ":" + password));},
+            data: JSON.stringify({"username": username, "password": password}),
             success: function (data, response, xhr){
                 if (xhr.status == 201){
-                    window.sessionStorage.setItem('mooncloud_login', data.token);
-                    //window.location.href = "http://"+data.token+":@localhost:8080/app";
-                    window.location.href = "http://localhost:8080/app";
+                    //window.sessionStorage.setItem('mooncloud_login', data.token);
+                    window.location.href = "http://localhost:8080/login";
                 }else{
                     $.notify({
 	                    message: 'invalid username/password',
@@ -101,7 +99,7 @@ Author URL: https://www.github.com/fgaudenzi
                     alert("hello")
                 else
                     $.notify({
-	                    message: 'invalid username/password',
+	                     message: 'invalid username/password',
 	                },{
 	                    type: 'danger',
                         newest_on_top: true,
@@ -109,6 +107,9 @@ Author URL: https://www.github.com/fgaudenzi
                     });
             }
         });
+
+        }
+
 
        //window.location.href = "./index.html";
         return false;

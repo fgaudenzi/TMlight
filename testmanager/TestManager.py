@@ -47,7 +47,11 @@ def verify_password(username_or_token, password):
 
 @app.route('/login')
 def log_in():
-    return render_template('login1.html')
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('signup.html')
 
 @app.route('/api/token')
 @auth.login_required
@@ -106,7 +110,7 @@ def list_evidences(probe_id):
 
 
 @app.route('/app')
-@auth.login_required
+#@auth.login_required
 def home():
     return render_template('home.html')
 
