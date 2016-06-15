@@ -177,7 +177,7 @@ def createProbe():
                 evidencep=False
                 active=False
             result.append({"id":p.id,"type":p.type,"active":active,"status":""})
-    return json.dumps({result}),200
+        return json.dumps({result}),200
 
 @app.route('/drivers',methods=['GET'])
 def list_driver():
