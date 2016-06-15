@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d46786bd-3b8e-4606-b882-0a7766e9afe9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testmanager/TestManager.py" afterPath="$PROJECT_DIR$/testmanager/TestManager.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testmanager/templates/login.html" afterPath="$PROJECT_DIR$/testmanager/templates/login.html" />
     </list>
     <ignored path="TestManager.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,8 +34,10 @@
         <entry file="file://$PROJECT_DIR$/testmanager/templates/login.html">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="65" column="24" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
-              <folding />
+              <caret line="65" column="18" selection-start-line="65" selection-start-column="18" selection-end-line="65" selection-end-column="18" />
+              <folding>
+                <marker date="1465974131000" expanded="true" signature="2312:2317" placeholder="//..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -63,8 +65,8 @@
       <file leaf-file-name="TestManager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/testmanager/TestManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.6635733">
-              <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.55684453">
+              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding>
                 <element signature="e#0#82#0" expanded="true" />
               </folding>
@@ -651,7 +653,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/testmanager/TestManager.py</url>
-          <line>56</line>
+          <line>57</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
       </breakpoints>
@@ -680,7 +682,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="65" column="24" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
-          <folding />
+          <folding>
+            <marker date="1465974131000" expanded="true" signature="2312:2317" placeholder="//..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1003,8 +1007,10 @@
     <entry file="file://$PROJECT_DIR$/testmanager/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="65" column="24" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="24" />
-          <folding />
+          <caret line="65" column="18" selection-start-line="65" selection-start-column="18" selection-end-line="65" selection-end-column="18" />
+          <folding>
+            <marker date="1465974131000" expanded="true" signature="2312:2317" placeholder="//..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1034,8 +1040,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/testmanager/TestManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.6635733">
-          <caret line="168" column="20" selection-start-line="168" selection-start-column="20" selection-end-line="168" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.55684453">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding>
             <element signature="e#0#82#0" expanded="true" />
           </folding>

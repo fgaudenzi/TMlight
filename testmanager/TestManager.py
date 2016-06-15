@@ -7,7 +7,7 @@ from testmanager.model.av_probe import Static_Probe
 from testmanager.tools.probe_runner import runner_p
 from testmanager.model.evaluation import Evidence
 import sys
-from flask.ext.httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth
 auth = HTTPBasicAuth()
 
 app = Flask(__name__)
@@ -54,7 +54,8 @@ def log_in():
 def get_auth_token():
     token = g.user.generate_auth_token()
     #print "CIAO"
-    return  json.dumps({ 'token': token.decode('ascii') }), 201, {'Content-Type':'application/json'}
+    return json.dumps({ 'token': token.decode('ascii') }), 201, {'Content-Type':'application/json'}
+
 
 @app.route('/')
 def hello_world():
