@@ -47,14 +47,14 @@ def verify_password(username_or_token, password):
 
 @app.route('/login')
 def log_in():
-    return render_template('login.html')
+    return render_template('login1.html')
 
 @app.route('/api/token')
 @auth.login_required
 def get_auth_token():
     token = g.user.generate_auth_token()
     #print "CIAO"
-    return  json.dumps({ 'token': token.decode('ascii') }), 201, {'ContentType':'application/json'}
+    return  json.dumps({ 'token': token.decode('ascii') }), 201, {'Content-Type':'application/json'}
 
 @app.route('/')
 def hello_world():
@@ -88,7 +88,7 @@ def signup():
 
 
 
-@app.route('/probe/<probe_id>/evidences/',methods=['GET'])
+@app.route('/probes/<probe_id>/evidence',methods=['GET'])
 @auth.login_required
 def list_evidences(probe_id):
     evs=Evidence.query.filter_by(id_probe=int(probe_id))
@@ -104,13 +104,13 @@ def list_evidences(probe_id):
     return json.dumps(result),200
 
 
-@app.route('/app',methods=['GET'])
+@app.route('/app')
 @auth.login_required
 def home():
     return render_template('home.html')
 
 
-@app.route('/probe/<probe_id>/run',methods=['POST','GET'])
+@app.route('/probes/<probe_id>/run',methods=['POST'])
 @auth.login_required
 def runProbe(probe_id):
     if request.method == 'POST':
@@ -166,7 +166,7 @@ def createProbe():
         return json.dumps({"id":str(probedb.id)}), 201
 
 
-@app.route('/drivers/',methods=['GET'])
+@app.route('/drivers',methods=['GET'])
 def list_driver():
     print "required list available drivers"
     allp=Static_Probe.query.all()
@@ -196,7 +196,7 @@ def getUser():
 @app.route('/api/resource')
 @auth.login_required
 def get_resource():
-   return json.dumps({'success':str(g.user.email)}), 201, {'ContentType':'application/json'}
+   return json.dumps({'success':str(g.user.email)}), 200, {'ContentType':'application/json'}
 
 
 @app.errorhandler(401)
@@ -213,6 +213,8 @@ def auth_error():
             return redirect(url_for('log_in'))
          except Exception,e:
              print str(e)
+
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=8080)
