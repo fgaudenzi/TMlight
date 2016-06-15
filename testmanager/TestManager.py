@@ -154,7 +154,7 @@ def show_testcase(probe_id):
           return p.doc,200,{'Content-Type': 'application/xml; charset=utf-8'}
 
 
-@app.route('/probes/',methods=['POST'])
+@app.route('/probes/',methods=['POST','GET'])
 @auth.login_required
 def createProbe():
     if request.method == 'POST':
@@ -165,7 +165,19 @@ def createProbe():
         db_session.add(probedb)
         db_session.commit()
         return json.dumps({"id":str(probedb.id)}), 201
-
+    if request.method == 'GET':
+        allp=Probem.query.all()
+        result=[]
+        for p in allp:
+            e=Evidence.query.filter_by(id_probe=int(p.id))
+            if e and len(e)>0:
+                evidencep=e[0].result
+                active=True
+            else:
+                evidencep=False
+                active=False
+            result.append({"id":p.id,"type":p.type,"active":active,"status":""})
+    return json.dumps({result}),200
 
 @app.route('/drivers',methods=['GET'])
 def list_driver():
