@@ -1,19 +1,14 @@
-from flask import Flask, json, request,abort,g, render_template, redirect, url_for
-from testmanager.database import db_session, init_db
-from testmanager.model.user import User
-from testmanager.model.probem import Probem
-from testmanager.tools.probeParser import ProbeParse
-from testmanager.model.av_probe import Static_Probe
-from testmanager.tools.probe_runner import runner_p
-from testmanager.model.evaluation import Evidence
 import sys
-from flask_httpauth import HTTPBasicAuth
-auth = HTTPBasicAuth()
-
-app = Flask(__name__)
-
-app.config['SECRET_KEY'] = 'trentatre trentini'
-
+from flask import Flask, json, request,abort,g, render_template, redirect, url_for
+from flask_jwt import JWT, jwt_required
+from access_security import authenticate,identity
+from testmanager.database import db_session, init_db
+from testmanager.model.av_probe import Static_Probe
+from testmanager.model.evaluation import Evidence
+from testmanager.model.probem import Probem
+from testmanager.model.user import User
+from testmanager.tools.probeParser import ProbeParse
+from testmanager.tools.probe_runner import runner_p
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -23,26 +18,18 @@ def request_wants_json():
         request.accept_mimetypes['text/html']
 
 
+app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'trentatre trentini'
+jwt = JWT(app, authenticate, identity)
+
+
+
+
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
-
-
-@auth.verify_password
-def verify_password(username_or_token, password):
-    # first try to authenticate by token
-    user = User.verify_auth_token(username_or_token)
-    if not user:
-        # try to authenticate with username/password
-        user = User.query.filter_by(email=username_or_token).first()
-        if not user or not user.verify_password(password):
-            return False
-    g.user = user
-    return True
-
-
-
 
 
 @app.route('/login')
@@ -54,16 +41,16 @@ def register():
     return render_template('signup.html')
 
 @app.route('/api/token')
-@auth.login_required
+@jwt_required()
 def get_auth_token():
     token = g.user.generate_auth_token()
     #print "CIAO"
     return json.dumps({ 'token': token.decode('ascii') }), 201, {'Content-Type':'application/json'}
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+#@app.route('/')
+#def hello_world():
+#    return 'Hello World!'
 
 @app.route('/users',methods=['POST'])
 @app.route('/signup',methods=['POST'])
@@ -94,7 +81,7 @@ def signup():
 
 
 @app.route('/probes/<probe_id>/evidence',methods=['GET'])
-@auth.login_required
+@jwt_required()
 def list_evidences(probe_id):
     evs=Evidence.query.filter_by(id_probe=int(probe_id))
     result=[]
@@ -110,13 +97,12 @@ def list_evidences(probe_id):
 
 
 @app.route('/app')
-#@auth.login_required
 def home():
     return render_template('home.html')
 
 
 @app.route('/probes/<probe_id>/run',methods=['POST'])
-@auth.login_required
+@jwt_required()
 def runProbe(probe_id):
     if request.method == 'POST':
         p=Probem.query.filter_by(id=probe_id).first()
@@ -133,7 +119,7 @@ def runProbe(probe_id):
             return json.dumps({"message":"error starting probe"+str(probe_id)+" check Test Agent logs"}),500
 
 @app.route('/probes/<probe_id>',methods=['GET','DELETE'])
-@auth.login_required
+@jwt_required()
 def manageProbe(probe_id):
     try:
         p=Probem.query.filter_by(id=int(probe_id)).first()
@@ -151,7 +137,7 @@ def manageProbe(probe_id):
 
 
 @app.route('/probes/<probe_id>/schema',methods=['GET'])
-@auth.login_required
+@jwt_required()
 def show_testcase(probe_id):
      p=Probem.query.filter_by(id=int(probe_id)).first()
      if p:
@@ -159,7 +145,7 @@ def show_testcase(probe_id):
 
 
 @app.route('/probes/',methods=['POST','GET'])
-@auth.login_required
+@jwt_required()
 def createProbe():
     if request.method == 'POST':
         p=ProbeParse()
@@ -204,32 +190,20 @@ def get_driver(driver_id):
     return json.dumps({result}),200
 
 @app.route('/users',methods=['GET'])
+@jwt_required()
 def getUser():
     print User.query.all()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 
-@app.route('/api/resource')
-@auth.login_required
+@app.route('/api/resource',methods=['GET'])
+@jwt_required()
 def get_resource():
    return json.dumps({'success':str(g.user.email)}), 200, {'ContentType':'application/json'}
 
 
-@app.errorhandler(401)
-def custom_401():
-    a=request_wants_json()
-    return "",404
-@auth.error_handler
-def auth_error():
-    a=request_wants_json()
-    if(a):
-        return "",403
-    else:
-         try:
-            return redirect(url_for('log_in'))
-         except Exception,e:
-             print str(e)
+
 
 
 if __name__ == '__main__':
