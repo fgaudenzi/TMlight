@@ -48,9 +48,9 @@ def get_auth_token():
     return json.dumps({ 'token': token.decode('ascii') }), 201, {'Content-Type':'application/json'}
 
 
-#@app.route('/')
-#def hello_world():
-#    return 'Hello World!'
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
 
 @app.route('/users',methods=['POST'])
 @app.route('/signup',methods=['POST'])
