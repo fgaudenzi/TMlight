@@ -3,5 +3,5 @@ Flask-JWT==0.3.2
 Jinja2==2.8
 MarkupSafe==0.23
 PyJWT==1.4
-clicl=6.6
-itsdangerous=0.24
+clicl==6.6
+itsdangerous==0.24
