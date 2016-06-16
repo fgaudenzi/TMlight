@@ -8,5 +8,5 @@ setup(
     license='GPL',
     author='filippo gaudenzi',
     author_email='filippo.gaudenzi@unimi.it',
-    description='Tm light for all in one deployment', requires=['celery','Flask','flask_jwt']
+    description='Tm light for all in one deployment', requires=['sqlalchemy','celery','flask_jwt','flask']
 )
