@@ -17,7 +17,7 @@ Author URL: https://www.github.com/fgaudenzi
 
 <div class="container" style="margin-top:100px">
     <div class="row text-center">
-        <form onsubmit="return login()">
+        <form action="/auth" method="POST">
         <div class="col-md-offset-3 col-md-5">
             <div class="form-login">
                          <img style="width: 200px;" class="image center" src="{{ url_for('static', filename='img/cloudmoon.png')}}">

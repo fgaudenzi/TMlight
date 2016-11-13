@@ -9,6 +9,7 @@ from testmanager.model.probem import Probem
 from testmanager.model.user import User
 from testmanager.tools.probeParser import ProbeParse
 from testmanager.tools.probe_runner import runner_p
+import subprocess
 
 def request_wants_json():
     best = request.accept_mimetypes \
@@ -41,7 +42,7 @@ def register():
     return render_template('signup.html')
 
 @app.route('/api/token')
-@jwt_required()
+#@jwt_required()
 def get_auth_token():
     token = g.user.generate_auth_token()
     #print "CIAO"
@@ -99,6 +100,81 @@ def list_evidences(probe_id):
 @app.route('/app')
 def home():
     return render_template('home.html')
+
+@app.route('/applications')
+def apphome():
+    return render_template('homeapp.html')
+
+@app.route('/appvuln')
+def vuln():
+    return render_template('homevuln.html')
+
+@app.route('/appenc')
+def nmap():
+    return render_template('homeenc.html')
+
+@app.route('/appnet')
+def net():
+    return render_template('homenet.html')
+
+
+@app.route('/resultenc',methods=['POST'])
+def resultenc():
+    port = request.form["port"]
+    host=request.form["host"]
+    message='<collector probe_driver="EncryptedChannelProbe" id="testsqlmap" cmid="testsqlmap"><TestCases><TestCase><ID>1</ID><TestInstance Operation="config"><Input>'
+    message=message+'<Item key="port" value="'+port+'"/><Item key="host" value="'+host+'"/></Input></TestInstance></TestCase></TestCases></collector>'
+    with open("/tmp/testEC.xml", "w") as text_file:
+        text_file.write(message)
+    #TODO: write xml for probe.py
+    #proc=subprocess.Popen(, shell=True)
+    #proc = subprocess.Popen(['python /root/probe.py', 'testEC.xml'],
+    proc = subprocess.Popen(['cat', '/tmp/testEC.xml'],
+                            shell=False,
+                            stdout=subprocess.PIPE,
+                            )
+    stdout_value = proc.communicate()[0]
+    print stdout_value
+    return render_template('result.html',nameprobe="channel encryption",resultprobe=stdout_value)
+
+@app.route('/resultvuln',methods=['POST'])
+def resultvuln():
+    category = request.form["category"]
+    target=request.form["target"]
+    CVSS=request.form["CVSS"]
+    message='<collector probe_driver="probe_searchscan" id="probe_searchscan" cmid="probe_searchscan">   <TestCases>      <TestCase>         <ID>1</ID>         <TestInstance Operation="nessus">            <Input>               <Item key="host" value="https://localhost:8834" />               <Item key="login" value="admin" />               <Item key="password" value="password" />               <Item key="Insecure" value="True" />               <Item key="Target" value="'+target+'" />            </Input>         </TestInstance>         <TestInstance Operation="credentials">            <Input>               <Item key="PrivateKeyPath" value="" />               <Item key="certPass" value="" />               <Item key="certUser" value="" />               <Item key="ssh_user" value="" />               <Item key="ssh_pass" value="" />               <Item key="MySQL_user" value="" />               <Item key="MySQL_pass" value="" />               <Item key="MongoDB" value="" />               <Item key="MongoDB_user" value="" />               <Item key="MongoDB_pass" value="" />            </Input>         </TestInstance>         <TestInstance Operation="parameters">            <Input>               <Item key="Time" value="2012-12-31T00:00:00.000-00:00" />               <Item key="CVSS" value="'+CVSS+'" />               <Item key="Category" value="'+category+'" />            </Input>         </TestInstance>         <TestInstance Operation="mongo">            <Input>               <Item key="host" value="localhost" />               <Item key="port" value="27017" />            </Input>         </TestInstance>      </TestCase>   </TestCases></collector>'
+    with open("/tmp/testEC.xml", "w") as text_file:
+        text_file.write(message)
+    #TODO: write xml for probe.py
+    #proc=subprocess.Popen(, shell=True)
+    #proc = subprocess.Popen(['python /root/probe.py', 'testEC.xml'],
+    proc = subprocess.Popen(['cat', '/tmp/searchscan.xml'],
+                            shell=False,
+                            stdout=subprocess.PIPE,
+                            )
+    stdout_value = proc.communicate()[0]
+    print stdout_value
+    return render_template('result.html',nameprobe="channel encryption",resultprobe=stdout_value)
+
+@app.route('/resultnet',methods=['POST'])
+def resultnet():
+    port = request.form["port"]
+    host=request.form["host"]
+    message='<collector probe_driver="EncryptedChannelProbe" id="testsqlmap" cmid="testsqlmap"><TestCases><TestCase><ID>1</ID><TestInstance Operation="config"><Input>'
+    message=message+'<Item key="port" value="'+port+'"/><Item key="host" value="'+host+'"/></Input></TestInstance></TestCase></TestCases></collector>'
+    with open("/tmp/testEC.xml", "w") as text_file:
+        text_file.write(message)
+    #TODO: write xml for probe.py
+    #proc=subprocess.Popen(, shell=True)
+    #proc = subprocess.Popen(['python /root/probe.py', 'testEC.xml'],
+    proc = subprocess.Popen(['cat', '/tmp/testEC.xml'],
+                            shell=False,
+                            stdout=subprocess.PIPE,
+                            )
+    stdout_value = proc.communicate()[0]
+    print stdout_value
+    return render_template('result.html',nameprobe="channel encryption",resultprobe=stdout_value)
+
 
 
 @app.route('/probes/<probe_id>/run',methods=['POST'])

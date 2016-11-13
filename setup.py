@@ -1,12 +1,13 @@
 from distutils.core import setup
 
 setup(
-    name='TM light',
-    version='0.1',
+    name='TMlight',
+    version='',
     packages=['testmanager', 'testmanager.model', 'testmanager.tools'],
-    url='https://github.com/fgaudenzi/TMlight',
+    url='github.com/fgaudenzi/TMlight',
     license='GPL',
     author='filippo gaudenzi',
     author_email='filippo.gaudenzi@unimi.it',
-    description='Tm light for all in one deployment', requires=['sqlalchemy','celery','flask_jwt','flask']
+    description='',
+     install_requires=['flask', 'flask-jwt']
 )
